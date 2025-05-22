@@ -5,7 +5,9 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"os"
 
+	_ "github.com/joho/godotenv/autoload"
 	"github.com/spf13/cobra"
 )
 
@@ -28,7 +30,6 @@ var convertCommand = &cobra.Command{
 			fmt.Println("error", err)
 		}
 
-		fmt.Println("rate", rate)
 		totalAmount := amount * rate
 		fmt.Printf("Total amount is %.4f \n", totalAmount)
 	},
@@ -49,7 +50,8 @@ type ExchangeRateResponse struct {
 }
 
 func getExchangeRate(from, to string) (float64, error) {
-	url := fmt.Sprintf("https://v6.exchangerate-api.com/v6/3037e8d7ed7e929e499b25cc/latest/%s", from)
+	var API_SECRET = os.Getenv("API_SECRET")
+	url := fmt.Sprintf("https://v6.exchangerate-api.com/v6/%s/latest/%s", API_SECRET, from)
 	res, err := http.Get(url)
 	if err != nil {
 		return 0, err
